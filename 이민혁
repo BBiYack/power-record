@@ -1,1 +1,33 @@
+void inputDevice(Device* dev, int index)
 
+inputString("Device name: ", dev->name, NAME_SIZE);
+inputString("Location: ", dev->location, NAME_SIZE);
+
+dev->ratedPower = inputDoubleMin("Rated power(W): ", 0.1);
+dev->voltage = inputDoubleMin("Voltage(V): ", 0.0);
+dev->current = inputDoubleMin("Current(A): ", 0.0);
+dev->runningHours = inputDoubleMin("Running hours per day(h): ", 0.0);
+
+Device devices[MAX_DEVICES];
+
+double powerLog[MAX_DEVICES][HOURS] = { 0 };
+
+void makePowerLog(Device devices[], double powerLog[MAX_DEVICES][HOURS], int count)
+
+for (int i = 0; i < count; i++) {
+    double remainHours = devices[i].runningHours;
+
+    for (int h = 0; h < HOURS; h++) {
+        if (remainHours >= 1.0) {
+            powerLog[i][h] = devices[i].power;
+            remainHours -= 1.0;
+        }
+        else if (remainHours > 0.0) {
+            powerLog[i][h] = devices[i].power * remainHours;
+            remainHours = 0.0;
+        }
+        else {
+            powerLog[i][h] = 0.0;
+        }
+    }
+}
